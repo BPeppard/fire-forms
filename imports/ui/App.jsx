@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
+import { Route, NavLink } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
@@ -15,6 +15,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+
+import Drawer from './components/Drawer';
+import HomePage from './pages/HomePage';
+import PMIPage from './pages/PMIPage';
 
 const drawerWidth = 240;
 
@@ -55,10 +59,6 @@ const styles = theme => ({
   hide: {
     display: 'none'
   },
-  drawerPaper: {
-    position: 'relative',
-    width: drawerWidth
-  },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
@@ -86,6 +86,10 @@ const styles = theme => ({
   },
   'contentShift-left': {
     marginLeft: 0
+  },
+  noUnderline: {
+    textDecoration: 'none',
+    color: 'unset'
   }
 });
 
@@ -106,29 +110,6 @@ class PersistentDrawer extends React.Component {
     const { classes, theme } = this.props;
     const { open } = this.state;
 
-    const drawer = (
-      <Drawer
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={this.handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <ListItem button>
-            <ListItemText primary="Trash" />
-          </ListItem>
-        </List>
-      </Drawer>
-    );
-
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
@@ -147,12 +128,14 @@ class PersistentDrawer extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" color="inherit" noWrap>
-                Fire Inspections
-              </Typography>
+              <NavLink to="/" className={classes.noUnderline}>
+                <Typography variant="h6" color="inherit" noWrap>
+                  Fire Inspections
+                </Typography>
+              </NavLink>
             </Toolbar>
           </AppBar>
-          {drawer}
+          <Drawer open={open} onDrawerClose={this.handleDrawerClose} />
           <main
             className={classNames(classes.content, classes[`content-left`], {
               [classes.contentShift]: open,
@@ -160,7 +143,8 @@ class PersistentDrawer extends React.Component {
             })}
           >
             <div className={classes.drawerHeader} />
-            {'Home Page'}
+            <Route exact path="/" component={HomePage} />
+            <Route exact path="/pmi" component={PMIPage} />
           </main>
         </div>
       </div>
